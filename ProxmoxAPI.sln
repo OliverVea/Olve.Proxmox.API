@@ -2,6 +2,13 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Olve.Proxmox.API", "Olve.Proxmox.API\Olve.Proxmox.API.csproj", "{98B99541-13F1-4536-BFFF-A453C04DD0CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{67383346-7178-40E4-881A-3B92ED57E81E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "repo", "repo", "{CF711C14-FDBA-4BDA-91EE-2941875CF231}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +19,9 @@ Global
 		{98B99541-13F1-4536-BFFF-A453C04DD0CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98B99541-13F1-4536-BFFF-A453C04DD0CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98B99541-13F1-4536-BFFF-A453C04DD0CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67383346-7178-40E4-881A-3B92ED57E81E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67383346-7178-40E4-881A-3B92ED57E81E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67383346-7178-40E4-881A-3B92ED57E81E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67383346-7178-40E4-881A-3B92ED57E81E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

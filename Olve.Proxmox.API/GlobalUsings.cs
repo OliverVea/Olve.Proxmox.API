@@ -1,0 +1,1 @@
+global using Olve.Utilities.Types.Results;
