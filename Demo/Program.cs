@@ -1,47 +1,46 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using Olve.Proxmox.API;
-using Polly;
-using Polly.Retry;
+using Olve.Proxmox;
+using Olve.Proxmox.Operations;
 
 var serviceCollection = new ServiceCollection();
 
-serviceCollection.AddHttpClient();
-serviceCollection.AddResiliencePipeline(CheckProxmoxConnectionOperation.ResiliencePipelineKey, builder =>
-{
-    builder.AddRetry(new RetryStrategyOptions
-        {
-            ShouldHandle = new PredicateBuilder().Handle<HttpRequestException>().HandleInner<TimeoutException>(),
-            Delay = TimeSpan.FromSeconds(0.5),
-            MaxRetryAttempts = 4, // Try 5 times total
-            BackoffType = DelayBackoffType.Exponential,
-            UseJitter = true
-        })
-        .AddTimeout(TimeSpan.FromSeconds(30));
-});
-
-serviceCollection.AddSingleton<CheckProxmoxConnectionOperation>();
+serviceCollection.AddProxmoxServices();
 
 var serviceProvider = serviceCollection.BuildServiceProvider();
 
-var checkProxmoxConnectionOperation = serviceProvider.GetRequiredService<CheckProxmoxConnectionOperation>();
 
 var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 var apiKeyFile = Path.Combine(assemblyDir, ".proxmox-api-key");
 
 var apiKey = File.ReadAllText(apiKeyFile).Trim();
 
-ProxmoxConnectionInfo connectionInfo = new("fortress.lan", 8006, apiKey);
-var result = await checkProxmoxConnectionOperation.ExecuteAsync(new CheckProxmoxConnectionOperation.Request(connectionInfo));
+ProxmoxConnectionInfo connectionInfo = new(
+    Host: "fortress.lan",
+    Port: 8006,
+    User: "olve.proxmox",
+    Realm: "pam",
+    TokenId: "olve.proxmox",
+    Token: apiKey);
 
-if (result.TryPickProblems(out var problems))
+var operation = serviceProvider.GetRequiredService<ListPCIMappingsOperation>();
+ListPCIMappingsOperation.Request request = new(connectionInfo);
+var result = await operation.ExecuteAsync(request);
+
+if (result.TryPickProblems(out var problems, out var response))
 {
     foreach (var problem in problems)
     {
-        Console.WriteLine(problem);
+        var debugString = problem.ToDebugString();
+        Console.WriteLine(debugString);
     }
 
     return 1;
+}
+
+foreach (var mapping in response.PCIMappings)
+{
+    Console.WriteLine(mapping);
 }
 
 return 0;
