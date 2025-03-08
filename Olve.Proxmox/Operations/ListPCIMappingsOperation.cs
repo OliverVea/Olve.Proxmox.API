@@ -1,11 +1,9 @@
 using System.Net.Http.Json;
 using Olve.Proxmox.Authentication;
+using Olve.Proxmox.Models;
 using Olve.Utilities.Operations;
 
 namespace Olve.Proxmox.Operations;
-
-public readonly record struct MappingId(string Value);
-public readonly record struct PCIMapping(MappingId Id, string? Description);
 
 public class ListPCIMappingsOperation(ProxmoxHttpService proxmoxHttpService)
     : IAsyncOperation<ListPCIMappingsOperation.Request, ListPCIMappingsOperation.Response>
@@ -48,25 +46,8 @@ public class ListPCIMappingsOperation(ProxmoxHttpService proxmoxHttpService)
     private static Response MapResponse(ResponseModel responseModel)
     {
         return new Response(
-            responseModel.Data.Select(x => new PCIMapping(new MappingId(x.Id), x.Description)).ToList());
+            responseModel.Data.Select(x => new PCIMapping(new PCIMappingId(x.Id), x.Description)).ToList());
     }
-
-    /*
-     {
-         "data" : [ {
-           "type" : "pci",
-           "map" : [ "id=8086:7af0,iommugroup=6,node=fortress,path=0000:00:14.3,subsystem-id=8086:0074" ],
-           "digest" : "e45779c584628a4488f935587e5ea459af58d1c5",
-           "id" : "WifiCard"
-         }, {
-           "id" : "RTX3070",
-           "digest" : "e45779c584628a4488f935587e5ea459af58d1c5",
-           "map" : [ "id=10de:2488,iommugroup=14,node=fortress,path=0000:01:00,subsystem-id=1043:883a" ],
-           "description" : "NVidia RTX3070 GPU",
-           "type" : "pci"
-         } ]
-       }
-     */
 
     private class ResponseModel
     {

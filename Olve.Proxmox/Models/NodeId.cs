@@ -1,8 +1,6 @@
-namespace Olve.Proxmox.Operations;
+namespace Olve.Proxmox.Models;
 
 public readonly record struct NodeId(string Value);
-public readonly record struct VMId(string Value);
-public readonly record struct JobId(string Value);
 
 /*
 public class StartVMOperation : IAsyncOperation<StartVMOperation.Request, StartVMOperation.Response>
